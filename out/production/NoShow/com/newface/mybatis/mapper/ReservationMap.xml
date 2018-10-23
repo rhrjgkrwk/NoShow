@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.newface.dao.ReservationDAO">
+
+    <resultMap id="reservationMap" type="Reservation">
+        <id property="reservationNo" column="reservation_no"/>
+        <result property="reservationDate" column="reservation_date"/>
+        <result property="reservationTime" column="reservation_time"/>
+        <result property="reservationRequest" column="reservation_menu_request"/>
+        <collection property="restaurant" column="restaurant_no" javaType="Restaurant"
+                    resultMap="com.newface.dao.RestaurantDAO.restaurantResultMap"/>
+        <collection property="member" column="member_no" javaType="Member"
+                    resultMap="com.newface.dao.MemberDAO.memberResultMap"/>
+    </resultMap>
+
+    <resultMap id="menuListMap" type="ReservationMenuList">
+        <result property="menuCount" column="menu_count"/>
+        <collection property="menu" column="menu_no" javaType="Menu"
+                    resultMap="com.newface.dao.MenuDAO.menuResultMap"/>
+    </resultMap>
+    
+    <resultMap id="reservationListMap" type="ReservationList">
+        <collection property="reservation" column="reservation_no" javaType="Reservation"
+                    resultMap="reservationMap"/>
+        <collection property="menuList" column="menu_no" javaType="ArrayList"
+        resultMap="menuListMap"/>
+    </resultMap>
+
+    <resultMap id="reservationMenuMap" type="ReservationMenu">
+        <result property="menuCount" column="menu_count"/>
+        <collection property="reservation" column="reservation_no" javaType="Reservation"
+        resultMap="reservationMap"/>
+        <collection property="menu" column="menu_no" javaType="Menu"
+        resultMap="com.newface.dao.MenuDAO.menuResultMap"/>
+    </resultMap>
+
+    <select id="selectAllReservationList" resultMap="reservationListMap">
+        SELECT r.*, m.*, rm.*
+        FROM reservation as r
+        INNER JOIN reservation_menu as rm
+        ON r.reservation_no = rm.reservation_no
+        INNER JOIN menu as m
+        ON rm.menu_no = m.menu_no
+    </select>
+
+    <insert id="addReservation" parameterType="Reservation" useGeneratedKeys="true" keyProperty="reservationNo" keyColumn="reservation_no">
+        INSERT INTO reservation(reservation_date, reservation_time, reservation_menu_request, restaurant_no, member_no)
+        VALUES (#{reservationDate}, #{reservationTime}, #{reservationRequest}, #{restaurant.restaurantNo}, #{member.memberNo})
+        <selectKey keyProperty="reservationNo" resultType="int" order="AFTER">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+    </insert>
+
+    <insert id="addReservationMenu" parameterType="ReservationMenu">
+        INSERT INTO reservation_menu(reservation_no, menu_no, menu_count)
+        VALUES(#{reservation.reservationNo}, #{menu.menuNo}, #{menuCount})
+    </insert>
+</mapper>

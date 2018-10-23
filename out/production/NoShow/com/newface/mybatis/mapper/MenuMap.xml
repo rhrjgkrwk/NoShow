@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.newface.dao.MenuDAO">
+
+    <resultMap id="menuResultMap" type="Menu">
+        <id property="menuNo" column="menu_no"/>
+        <result property="menuNum" column="menu_num"/>
+        <result property="menuName" column="menu_name"/>
+        <result property="menuPrice" column="menu_price"/>
+        <result property="menuDescription" column="menu_description"/>
+        <collection property="restaurant" column="restaurant_no" javaType="Restaurant"
+        resultMap="com.newface.dao.RestaurantDAO.restaurantResultMap"/>
+    </resultMap>
+
+    <select id="selectMenuByRestaurant" resultMap="menuResultMap" parameterType="int">
+        SELECT m.*, r.*
+        FROM menu as m
+        INNER JOIN restaurant as r
+        ON m.restaurant_no = r.restaurant_no
+        WHERE r.restaurant_no = #{restaurantNo}
+    </select>
+
+    <select id="selectMenuByNum" resultMap="menuResultMap">
+        SELECT *
+        FROM menu
+        WHERE restaurant_no = #{restaurantNo} AND menu_num = #{menuNum}
+    </select>
+
+    <insert id="addMenu" parameterType="Menu" useGeneratedKeys="true" keyProperty="menuNo" keyColumn="menu_no">
+        INSERT INTO menu (menu_num, menu_name, menu_price, menu_description, restaurant_no)
+        VALUES (#{menuNum}, #{menuName}, #{menuPrice}, #{menuDescription}, #{restaurant.restaurantNo})
+        <selectKey keyProperty="menuNo" resultType="int" order="AFTER">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+    </insert>
+
+</mapper>

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.newface.dao.RestaurantDAO">
+
+    <resultMap id="restaurantResultMap" type="Restaurant">
+        <id property="restaurantNo" column="restaurant_no"/>
+        <result property="restaurantRegnum" column="restaurant_regnum"/>
+        <result property="restaurantName" column="restaurant_name"/>
+        <result property="restaurantAddress" column="restaurant_address"/>
+        <result property="restaurantTel" column="restaurant_tel"/>
+        <result property="restaurantLatitude" column="restaurant_latitude"/>
+        <result property="restaurantLongitude" column="restaurant_longitude"/>
+        <result property="restaurantState" column="restaurant_state"/>
+        <collection property="member" column="member_no" javaType="Member"
+        resultMap="com.newface.dao.MemberDAO.memberResultMap"/>
+    </resultMap>
+
+    <select id="selectAll" resultMap="restaurantResultMap">
+        SELECT 	r.*,
+		        m.member_id, m.member_name, m.member_tel, m.member_type
+        FROM restaurant as r
+        INNER JOIN member as m
+        ON r.member_no = m.member_no
+    </select>
+
+    <select id="selectOne" resultMap="restaurantResultMap" parameterType="int">
+        SELECT 	r.*,
+		        m.member_id, m.member_name, m.member_tel
+        FROM restaurant as r
+        INNER JOIN member as m
+        ON r.member_no = m.member_no
+        WHERE r.restaurant_no = #{restaurantNo}
+    </select>
+
+    <select id="selectOneByMemberId" resultMap="restaurantResultMap" parameterType="int">
+        SELECT 	r.*,
+        m.member_id, m.member_name, m.member_tel
+        FROM restaurant as r
+        INNER JOIN member as m
+        ON r.member_no = m.member_no
+        WHERE r.member_no = #{memberNo}
+    </select>
+
+    <insert id="add" parameterType="restaurant" useGeneratedKeys="true" keyProperty="restaurantNo" keyColumn="restaurant_no">
+        INSERT INTO restaurant (restaurant_regnum, restaurant_name, restaurant_address,
+                    restaurant_tel, restaurant_latitude, restaurant_longitude, member_no, restaurant_state)
+        VALUES      (#{restaurantRegnum}, #{restaurantName}, #{restaurantAddress}, #{restaurantTel},
+                      #{restaurantLatitude}, #{restaurantLongitude}, #{member.memberNo}, #{restaurantState})
+        <selectKey keyProperty="restaurantNo" resultType="int" order="AFTER">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+    </insert>
+
+    <update id="updateRestaurantState">
+        UPDATE member as m
+        INNER JOIN restaurant as r
+        ON m.member_no = r.member_no
+        SET m.member_type = #{memberType}, r.restaurant_state = #{restaurantState}
+        WHERE r.restaurant_no = #{restaurantNo}
+    </update>
+
+</mapper>

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
+         version="3.1">
+
+    <servlet>
+        <servlet-name>MyBatisInitializer</servlet-name>
+        <servlet-class>com.newface.mybatis.MyBatisConfig</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+
+    <filter>
+        <filter-name>LoginFilter</filter-name>
+        <filter-class>com.newface.filter.Filter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>LoginFilter</filter-name>
+        <url-pattern>*.do</url-pattern>
+    </filter-mapping>
+
+    <servlet>
+        <servlet-name>ControllerAction</servlet-name>
+        <servlet-class>com.newface.controller.ControllerAction</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ControllerAction</servlet-name>
+        <url-pattern>*.do</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>JControllerAction</servlet-name>
+        <servlet-class>com.newface.controller.JControllerAction</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>JControllerAction</servlet-name>
+        <url-pattern>*.json</url-pattern>
+    </servlet-mapping>
+
+</web-app>

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE configuration
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+
+    <properties resource="com/newface/mybatis/conf/mybatis.properties"/>
+
+    <typeAliases>
+        <typeAlias alias="Member" type="com.newface.domain.Member"/>
+        <typeAlias alias="Restaurant" type="com.newface.domain.Restaurant"/>
+        <typeAlias alias="Menu" type="com.newface.domain.Menu"/>
+        <typeAlias alias="ReservationMenu" type="com.newface.domain.ReservationMenu"/>
+        <typeAlias alias="Reservation" type="com.newface.domain.Reservation"/>
+        <typeAlias alias="ReservationMenuList" type="com.newface.domain.ReservationMenuList"/>
+        <typeAlias alias="ReservationList" type="com.newface.domain.ReservationList"/>
+    </typeAliases>
+
+    <environments default="development">
+        <environment id="development">
+            <transactionManager type="JDBC" />
+            <dataSource type="POOLED">
+                <property name="driver" value="${driver}" />
+                <property name="url" value="${url}" />
+                <property name="username" value="${username}" />
+                <property name="password" value="${password}" />
+            </dataSource>
+        </environment>
+    </environments>
+
+    <mappers>
+        <mapper resource="com/newface/mybatis/mapper/RestaurantMap.xml"/>
+        <mapper resource="com/newface/mybatis/mapper/MemberMap.xml"/>
+        <mapper resource="com/newface/mybatis/mapper/MenuMap.xml"/>
+        <mapper resource="com/newface/mybatis/mapper/ReservationMap.xml"/>
+    </mappers>
+</configuration>

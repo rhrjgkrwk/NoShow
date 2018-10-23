@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.newface.dao.MemberDAO">
+
+    <resultMap id="memberResultMap" type="Member">
+        <id property="memberNo" column="member_no"/>
+        <result property="memberId" column="member_id"/>
+        <result property="memberPw" column="member_pw"/>
+        <result property="memberName" column="member_name"/>
+        <result property="memberTel" column="member_tel"/>
+        <result property="memberRegdate" column="member_regdate"/>
+        <result property="memberState" column="member_state"/>
+        <result property="memberType" column="member_type"/>
+    </resultMap>
+
+    <select id="selectAll" resultMap="memberResultMap">
+        SELECT * FROM member
+    </select>
+
+    <select id="selectByNo" resultMap="memberResultMap" parameterType="int">
+        SELECT *
+        FROM  member
+        WHERE member_no = #{memberNo}
+    </select>
+
+    <select id="selectById" resultMap="memberResultMap" parameterType="String">
+        SELECT *
+        FROM  member
+        WHERE member_id = #{memberId}
+    </select>
+
+    <insert id="add" parameterType="Member" useGeneratedKeys="true" keyProperty="memberNo" keyColumn="member_no">
+        INSERT INTO member (member_id, member_pw, member_name, member_tel, member_type, member_state)
+        VALUE (#{memberId}, #{memberPw}, #{memberName}, #{memberTel}, #{memberType}, #{memberState})
+        <selectKey keyProperty="memberNo" resultType="int" order="AFTER">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+    </insert>
+
+    <update id="update" parameterType="Member">
+        UPDATE member
+        SET    member_id = #{memberId}, member_pw = #{memberPw}, member_name = #{memberName}
+        WHERE  member_no = #{memberNo}
+    </update>
+
+    <select id="getId" resultType="String" parameterType="String">
+        SELECT *
+        FROM  member
+        WHERE member_id = #{memberId}
+    </select>
+
+    <select id="login" resultMap="memberResultMap">
+        SELECT *
+        FROM  member
+        WHERE member_id = #{memberId}
+          AND member_pw = #{memberPw}
+    </select>
+
+</mapper>
